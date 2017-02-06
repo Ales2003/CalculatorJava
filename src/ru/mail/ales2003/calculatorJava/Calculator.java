@@ -1,5 +1,7 @@
+
 package ru.mail.ales2003.calculatorJava;
 import java.math.BigDecimal;
+import static java.math.MathContext.DECIMAL64;
 import static java.math.MathContext.UNLIMITED;
 import java.util.Scanner;
 /*
@@ -7,38 +9,50 @@ java console calculator supports one operation
 */
 public class Calculator {
 
-    public static void main(String[] args) {
-    Calculator twoNumberCalculatorBD = new Calculator();
-    twoNumberCalculatorBD.run();
-    }
+    
     
     //Displays the result
-    private void run(){
-    BigDecimal operandOne = Calculator.getOperand();
-    String operator = Calculator.getOperator();
-    BigDecimal operandTwo = Calculator.getOperand();
-    BigDecimal result = Calculator.twoNubersCalculate (operandOne, operandTwo, operator);
-    System.out.println("You result is "+result);
+    protected void run(){
+        lable:
+        while(true){
+            try{
+                BigDecimal operandOne = Calculator.getOperand();
+                String operator = Calculator.getOperator();
+                BigDecimal operandTwo = Calculator.getOperand();
+                BigDecimal result = Calculator.calculate (operandOne, operandTwo, operator);
+                System.out.println("You result is "+result);
+                System.out.println("================================================");
+            }
+            catch (RuntimeException e) {
+                System.out.println(e);
+                continue;
+            }
+        }
     }
     
     //Returns the result of calculation of the two numbers    
-    private static BigDecimal twoNubersCalculate (BigDecimal operandOne, BigDecimal operandTwo, String operator){
+    private static BigDecimal calculate (BigDecimal one, BigDecimal two, String operator) {
         BigDecimal result = null;
+        try {
         switch (operator){
-            case "+": result = operandOne.add(operandTwo);
+            case "+": result = one.add(two);
                      break;
-            case "-": result = operandOne.subtract(operandTwo);
+            case "-": result = one.subtract(two);
                      break;
-            case "*": result = operandOne.multiply(operandTwo);
+            case "*": result = one.multiply(two);
                      break;
-            case "/": result = operandOne.divide(operandTwo, 33, BigDecimal.ROUND_HALF_EVEN);
+            case "/": result = one.divide(two, 33, BigDecimal.ROUND_HALF_EVEN);
                      break;
             case "^": 
-                     double one = operandOne.doubleValue();
-                     double two = operandTwo.doubleValue();
-                     String tempResult = ""+Math.pow(one, two);
-                     result = new BigDecimal (tempResult, UNLIMITED);
+                     double tmpOne = one.doubleValue();
+                     double tmpTwo = two.doubleValue();
+                     String tmpResult = ""+Math.pow(tmpOne, tmpTwo);
+                     result = new BigDecimal (tmpResult);
                      break;
+        }
+        
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("One of You operands is to big for calculation. Try calculation again");
         }
         return result;
     }
@@ -87,4 +101,3 @@ public class Calculator {
         return operator;
     }
 }
- 
